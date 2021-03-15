@@ -1,13 +1,12 @@
 import React, { Component } from 'react'
-import {loginCheck,registerUser} from './service'
-import { Form, Input, Button,message ,Card, Tabs, Radio ,InputNumber} from 'antd';
+import {loginCheck} from './service'
+import { Form, Input, Button,message ,Card} from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import {history} from 'umi'
 import styles from './index.less'
 import logo from '../images/gduf.png'
 import { v4 as uuidv4 } from 'uuid';
 
-const { TabPane } = Tabs;
 
 export default class Login extends Component {
     constructor(props){
@@ -20,24 +19,15 @@ export default class Login extends Component {
     }
 
     onLoginFinish = async values => {
-        // const result = await loginCheck(values) 
-        // if(result.status === 200){
-        //     if(result.auth === 'admin'){
-        //         sessionStorage.setItem('admin', result.name)
-        //         history.push('/admin/dashboard/user')
-        //     }
-        //     else if (result.auth === 'black'){
-        //         message.error('该账号已被加入黑名单，无法登录')
-        //     }
-        //     else{
-        //         sessionStorage.setItem('user', result.name)
-        //         history.push('/user/dashboard/carPooling')
-        //     }
-        // }
-        // else{
-        //     message.error('账号或者密码错误')
-        // }   
-        history.push('/admin/dashboard/user')   
+        const result = await loginCheck(values) 
+        if(result.code === 200){
+            sessionStorage.setItem('admin', 'admin')
+            message.success(result.message)
+            history.push('/admin/dashboard/user')
+        }
+        else{
+            message.error('账号或者密码错误')
+        }   
       };
 
     

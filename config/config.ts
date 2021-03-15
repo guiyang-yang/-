@@ -40,10 +40,10 @@ export default defineConfig ({
     },
     // 配置多个代理 首先在本地上找资源找不到再到目的服务器找资源
     proxy: {
-        '/carSystem': { // 匹配前缀为/carSystem的请求
-          target: 'http://localhost:3000/',  // 目的服务器
+        '/ResSystem': { // 匹配前缀为/carSystem的请求
+          target: 'http://8.135.31.202:8888/',  // 目的服务器
           changeOrigin: true,                // 修改请求头地址欺骗服务器
-          pathRewrite: { '^/carSystem': '' },  // 重写请求路径
+          pathRewrite: { '^/ResSystem': '' },  // 重写请求路径
         },
       } 
 })
