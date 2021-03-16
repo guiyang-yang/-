@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {Card,Space,Button,Popconfirm,Message} from 'antd'
 import ProTable from '@ant-design/pro-table';
-import {DeleteForumInfo} from './service'
+import {getOrderInfo} from './service'
 import { PlusOutlined} from '@ant-design/icons'
 
 class Order extends Component {
@@ -73,7 +73,7 @@ class Order extends Component {
           valueType: 'option',
           render: (text,record) => (
              <>
-              <Button type='link'>编辑</Button>
+              <Button type='link'>退款</Button>
               <Popconfirm
                   title="确定删除吗"
                   onConfirm={()=>this.deleteForumInfo(record.forumId)}
@@ -133,42 +133,20 @@ class Order extends Component {
         return (
             <Card>
                 <ProTable  
-                 headerTitle={
-                  <Space>
-                  <Button icon={<PlusOutlined />}
-                    type='primary' 
-                    style={{marginRight:'10px'}}
-                    onClick={this.showModal} 
-                  >
-                   新建公告信息
-                  </Button></Space>}
-                      rowSelection={{
-                        type: "checkbox",                    
-                        onChange: (selectedRowKeys, selectedRows) => { 
-                          this.setState({
-                            selectedRowKeys
-                          })                   
-                        }
-                      }
-                    }
-                    tableAlertOptionRender={() => {
-                      return (
-                        <Space size={16}>
-                          <Popconfirm
-                              title="确定删除吗"
-                              onConfirm={()=>this.deleteForumbatchInfo()}
-                              okText="确定"
-                              cancelText="取消"
-                            >
-                          <a>批量删除</a>
-                          </Popconfirm>
-                        </Space>
-                      );
-                    }}
                      rowKey="forumId"
                      actionRef={this.ForumActionRef}
                      columns={this.forumcolumns}
                      request={async params =>{
+                       const result = await getOrderInfo()
+                       if(result.length){
+                        return{
+                          data:result,
+                          success:true,
+                          total:0,
+                          page:0,
+                          pageSize:10
+                      }
+                       }
                           return{
                              data:[],
                              success:true,

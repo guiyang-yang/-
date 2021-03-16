@@ -97,7 +97,7 @@ class User extends Component {
       if(title==='新建')    
       {
         const result = await AddUser(values)
-      if(result.status === 200){
+      if(result.code === 200){
         this.setState({
           visible:false
         },()=>{
@@ -111,7 +111,7 @@ class User extends Component {
     }
       else{
         const result = await EditUser(values)
-        if(result.status === 200){
+        if(result.code === 200){
           this.setState({
             visible:false
           },()=>{

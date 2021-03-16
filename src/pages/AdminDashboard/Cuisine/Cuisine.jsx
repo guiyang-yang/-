@@ -3,38 +3,38 @@ import {Card,Space,Button,Popconfirm,Message} from 'antd'
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment'
 import { PlusOutlined} from '@ant-design/icons'
-import {DeleteCarInfo} from './service'
-
+import {AddCuisine,getCuisine,EditCuisine,DeleteCuisine} from './service'
+import GlobalForm from './GlobalForm'
 
 class Cuisine extends Component {
 
-    Carcolumns = [
+  Foodcolumns = [
         {
           title: '菜品名称',
-          dataIndex: 'initiator',
-          key:'initiator',
+          dataIndex: 'food_name',
+          key:'food_name',
         },
         {
           title: '单价',
-          dataIndex: 'startPoint',
-          key:'startPoint',
+          dataIndex: 'unit_price',
+          key:'unit_price',
           search:false
         },
         {
           title: '菜品类型',
-          dataIndex: 'endPoint',
-          key:'endPoint',
+          dataIndex: 'type',
+          key:'type',
         },
         {
             title: '菜品简介',
-            dataIndex: 'restNum',
-            key:'restNum',
+            dataIndex: 'food_introduce',
+            key:'food_introduce',
             search:false
           },
         {
           title: '菜品图片',
-          dataIndex: 'image',
-          key: 'image',
+          dataIndex: 'food_pic',
+          key: 'food_pic',
           valueType: 'image',
           search: false,
           
@@ -46,10 +46,10 @@ class Cuisine extends Component {
           valueType: 'option',
           render: (text,record) => (
              <>
-             <Button type='link'>编辑</Button>
+             <Button type='link' onClick={()=>this.showEditModal(record)}>编辑</Button>
               <Popconfirm
                   title="确定删除吗"
-                  onConfirm={()=>this.deleteCarInfo(record.carInfoid)}
+                  onConfirm={()=>this.DeleteCuisine(record.food_code)}
                   okText="确定"
                   cancelText="取消"
                 >
@@ -63,39 +63,81 @@ class Cuisine extends Component {
     
 
     constructor(props){
-        super(props);
-        this.state={
-          selectedRowKeys:[]
-        }
-    }
+      super(props);
+      this.state={
+        title:'新建',
+        visible:false
+      }
+  }
 
-    CarActionRef = React.createRef();
+    FoodActionRef = React.createRef();
 
     async componentDidMount(){
 
   }
 
-  deleteCarbatchInfo=async()=>{
-    const params = this.state.selectedRowKeys
-    const result = await DeleteCarInfo({carInfoid:params})
-    if(result.status === 200){
+  DeleteCuisine= async(id)=>{
+    const result = await DeleteCuisine({food_code:id})
+    if(result.code === 200){
       Message.success(result.message)
-      this.CarActionRef.current.reloadAndRest()
+      this.FoodActionRef.current.reloadAndRest()
     }
     else{
       Message.error(result.message)
     }
   }
 
-  deleteCarInfo= async(carInfoid)=>{
-    const params = [carInfoid]
-    const result = await DeleteCarInfo({carInfoid:params})
-    if(result.status === 200){
-      Message.success(result.message)
-      this.CarActionRef.current.reloadAndRest()
+  showModal=()=>{
+    this.setState({
+      visible:true,
+      title:'新建'
+    })
+  }
+  showEditModal=(record)=>{
+    this.setState(pre=>{
+      const result = {...pre}
+      result.visible = true
+      result.record = record
+      result.title = '编辑'
+      return result 
+    })
+  }
+
+  closeModal=()=>{
+    this.setState({
+      visible:false
+    })
+  }
+
+  submit=async(values,title)=>{ 
+    if(title==='新建')    
+    {
+      const result = await AddCuisine(values)
+    if(result.code === 200){
+      this.setState({
+        visible:false
+      },()=>{
+        Message.success(result.message)
+        this.FoodActionRef.current.reloadAndRest()
+      })      
     }
     else{
       Message.error(result.message)
+    }
+  }
+    else{
+      const result = await EditCuisine(values)
+      if(result.code === 200){
+        this.setState({
+          visible:false
+        },()=>{
+          Message.success(result.message)
+          this.FoodActionRef.current.reloadAndRest()
+        })      
+      }
+      else{
+        Message.error(result.message)
+      }
     }
   }
  
@@ -103,6 +145,7 @@ class Cuisine extends Component {
 
 
     render() {
+      const {visible} = this.state
         return (
             <Card>
                 <ProTable  
@@ -113,35 +156,29 @@ class Cuisine extends Component {
                     style={{marginRight:'10px'}}
                     onClick={this.showModal} 
                   >
-                   新建公告信息
-                  </Button></Space>}
-                      rowSelection={{
-                        type: "checkbox",                   
-                        onChange: (selectedRowKeys, selectedRows) => { 
-                          this.setState({
-                            selectedRowKeys
-                          })                   
-                        }
-                      }
-                    }
-                    tableAlertOptionRender={() => {
-                      return (
-                        <Space size={16}>
-                          <Popconfirm
-                              title="确定删除吗"
-                              onConfirm={()=>this.deleteCarbatchInfo()}
-                              okText="确定"
-                              cancelText="取消"
-                            >
-                          <a>批量删除</a>
-                          </Popconfirm>
-                        </Space>
-                      );
-                    }}
-                     rowKey="carInfoid"
-                     actionRef={this.CarActionRef}
-                     columns={this.Carcolumns}
+                  添加菜品
+                  </Button></Space>}                     
+                     rowKey="food_code"
+                     actionRef={this.FoodActionRef}
+                     columns={this.Foodcolumns}
                      request={async params =>{
+                       const newParams={}
+                      if(params.food_name){
+                        newParams.food_name=params.food_name
+                    }
+                    if(params.type){
+                      newParams.type=params.type
+                  }
+                       const result = await getCuisine(newParams)
+                       if(result.length){
+                        return{
+                          data:result,
+                          success:true,
+                          total:0,
+                          page:0,
+                          pageSize:10
+                      }
+                       }
                          return{
                              data:[],
                              success:true,
@@ -153,6 +190,7 @@ class Cuisine extends Component {
                            pageSize: 10,
                          }}
                        />
+                        {visible?<GlobalForm  onClose={this.closeModal} onCreate={this.submit} {...this.state}  />:null}
             </Card>
         )
     }

@@ -1,7 +1,10 @@
 import request from 'umi-request'
 
-export function getUserInfo(params){
-    return request(`/carSystem/alluserInfo`,{params})
+export function getOrderInfo(params){
+    return request(`/ResSystem/order/list_select_customer`,{
+        method:'POST',
+        data: params
+    })
 }
 export function opertionBlack(params){
     return request(`/carSystem/opertionBlack`,{
