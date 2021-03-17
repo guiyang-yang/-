@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import {Modal,Form,Input} from 'antd'
 import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment'
+import ImageUpload from './ImageUpload'
 
 export default class NoticeForm extends Component {
     constructor(props){
@@ -12,16 +13,27 @@ export default class NoticeForm extends Component {
         }
     }
 
-
+    componentDidMount(){
+        if(this.props.record){
+            if(this.props.title === '编辑'){
+                const value = {...this.props.record}
+                this.setState({
+                    userid:value.userid
+                })
+                if(this.formRef){
+                    this.formRef.setFieldsValue({...value})
+                }
+            }
+        }  
+    }
 
     
     render() {
-
-        const {visible,onClose,onCreate} = this.props
+        const {visible,onClose,onCreate,title} = this.props
         return (
             <Modal  
             visible={visible}
-            title='新建公告'
+            title={title}
             okText="确定"
             cancelText="关闭" 
             onCancel={()=>{
@@ -32,11 +44,10 @@ export default class NoticeForm extends Component {
                 this.formRef
                     .validateFields()
                     .then((values) => {
-                        const newparams = {...values}
-                        newparams.createDate = moment().format('YY-MM-DD hh:mm:ss')
-                        newparams.noticeId = uuidv4()
+                        const newObj = {...values}
+                        const editObj = {...values,sale_id:this.state.sale_id}
                         this.formRef.resetFields();
-                        onCreate(newparams);
+                        onCreate(title==='编辑'?editObj:newObj,title);
           })
             }}
             destroyOnClose>
@@ -52,18 +63,24 @@ export default class NoticeForm extends Component {
                
                 <Form.Item
                     label="标题"
-                    name="title"
+                    name="sale_title"
                     rules={[{required:true,message:'请输入标题'}]}
                    >
                      <Input  placeholder="请输入标题" />            
                 </Form.Item>
                 <Form.Item
                     label="内容"
-                    name="description"
+                    name="sale_content"
                     rules={[{required:true,message:'请输入内容'}]}
                 >
                     <Input.TextArea  placeholder="请输入内容" />
                 </Form.Item>
+                <Form.Item
+            label="菜品图片"
+            name="food_pic"
+          >
+            <ImageUpload />
+            </Form.Item>
                 </Form>
             </Modal>
             

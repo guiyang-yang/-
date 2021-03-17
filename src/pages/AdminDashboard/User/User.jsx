@@ -143,7 +143,7 @@ class User extends Component {
                      actionRef={this.UserActionRef}
                      columns={this.Usercolumns}
                      request={async params =>{
-                       const newparams={username:'admin'}
+                       const newparams={}
                        if(params.username){
                         newparams.username=params.username
                        }

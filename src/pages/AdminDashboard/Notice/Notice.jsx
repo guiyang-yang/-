@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {Card,Space,Button,Popconfirm,Message} from 'antd'
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment'
-import {DeleteNoticeInfo,getNotcieInfo,newNoticeInfo} from './service'
+import {DeleteNoticeInfo,getNoticeInfo,newNoticeInfo,editNoticeInfo} from './service'
 import { PlusOutlined} from '@ant-design/icons'
 import NoticeForm from './NoticeForm'
 
@@ -11,25 +11,25 @@ class Notice extends Component {
     Noticecolumns = [
       {
         title: '销售号',
-        dataIndex: 'title',
-        key:'title',
+        dataIndex: 'sale_id',
+        key:'sale_id',
         search: false,
       },
         {
           title: '销售标题',
-          dataIndex: 'title',
-          key:'title',
+          dataIndex: 'sale_title',
+          key:'sale_title',
         },
           {
           title: '销售内容',
-          dataIndex: 'title',
-          key:'title',
+          dataIndex: 'sale_content',
+          key:'sale_content',
           search: false,
         },
         {
           title: '销售图片',
-          dataIndex: 'image',
-          key: 'image',
+          dataIndex: 'sale_pic',
+          key: 'sale_pic',
           valueType: 'image',
           search: false,
         },
@@ -40,10 +40,10 @@ class Notice extends Component {
           valueType: 'option',
           render: (text,record) => (
              <>
-             <Button type='link'>编辑</Button>
+             <Button type='link' onClick={()=>this.showEditModal(record)}>编辑</Button>
               <Popconfirm
                   title="确定删除吗"
-                  onConfirm={()=>this.deleteNoticeInfo(record.noticeId)}
+                  onConfirm={()=>this.deleteNoticeInfo(record.sale_id)}
                   okText="确定"
                   cancelText="取消"
                 >
@@ -59,9 +59,8 @@ class Notice extends Component {
     constructor(props){
         super(props);
         this.state={
-          selectedRowKeys:[],
-          visible:false
-
+          visible:false,
+          title:'新建'
         }
     }
 
@@ -71,22 +70,11 @@ class Notice extends Component {
 
   }
 
-  deleteNoticebatchInfo=async()=>{
-    const params = this.state.selectedRowKeys
-    const result = await DeleteNoticeInfo({noticeId:params})
-    if(result.status === 200){
-      Message.success(result.message)
-      this.NoticeActionRef.current.reloadAndRest()
-    }
-    else{
-      Message.error(result.message)
-    }
-  }
 
-  deleteNoticeInfo= async(noticeId)=>{
-    const params = [noticeId]
-    const result = await DeleteNoticeInfo({noticeId:params})
-    if(result.status === 200){
+
+  deleteNoticeInfo= async noticeId=>{
+    const result = await DeleteNoticeInfo({sale_id:noticeId})
+    if(result.code === 200){
       Message.success(result.message)
       this.NoticeActionRef.current.reloadAndRest()
     }
@@ -98,6 +86,7 @@ class Notice extends Component {
   showModal=()=>{
     this.setState({
       visible:true,
+      title:'新建'
     })
   }
   closeModal=()=>{
@@ -105,9 +94,23 @@ class Notice extends Component {
       visible:false
     })
   }
-  submit=async(values)=>{     
-    const result = await newNoticeInfo(values)
-    if(result.status === 200){
+
+
+  showEditModal=(record)=>{
+    this.setState(pre=>{
+      const result = {...pre}
+      result.visible = true
+      result.record = record
+      result.title = '编辑'
+      return result 
+    })
+  }
+
+  submit=async(values,title)=>{ 
+    if(title==='新建')    
+    {
+      const result = await newNoticeInfo(values)
+    if(result.code === 200){
       this.setState({
         visible:false
       },()=>{
@@ -117,6 +120,21 @@ class Notice extends Component {
     }
     else{
       Message.error(result.message)
+    }
+  }
+    else{
+      const result = await editNoticeInfo(values)
+      if(result.code === 200){
+        this.setState({
+          visible:false
+        },()=>{
+          Message.success(result.message)
+          this.NoticeActionRef.current.reloadAndRest()
+        })      
+      }
+      else{
+        Message.error(result.message)
+      }
     }
   }
 
@@ -134,36 +152,27 @@ class Notice extends Component {
                       style={{marginRight:'10px'}}
                       onClick={this.showModal}
                     >
-                     新建公告信息
+                     新建销售公告
                     </Button></Space>}
-                      rowSelection={{
-                        type: "checkbox",                   
-                        onChange: (selectedRowKeys, selectedRows) => { 
-                          this.setState({
-                            selectedRowKeys
-                          })                   
-                        }
-                      }
-                    }
-                    tableAlertOptionRender={() => {
-                      return (
-                        <Space size={16}>
-                          <Popconfirm
-                              title="确定删除吗"
-                              onConfirm={()=>this.deleteNoticebatchInfo()}
-                              okText="确定"
-                              cancelText="取消"
-                            >
-                          <a>批量删除</a>
-                          </Popconfirm>
-                        </Space>
-                      );
-                    }}
-                     rowKey="noticeId"
+                     rowKey="sale_id"
                      actionRef={this.NoticeActionRef}
                      columns={this.Noticecolumns}
   
                      request={async params =>{
+                      const newParams={}
+                      if(params.sale_title){
+                        newParams.sale_title=params.sale_title
+                    }
+                    const result = await getNoticeInfo(newParams)
+                       if(result.length){
+                        return{
+                          data:result,
+                          success:true,
+                          total:0,
+                          page:0,
+                          pageSize:10
+                      }
+                       }
                          return{
                              data:[],
                              success:true,

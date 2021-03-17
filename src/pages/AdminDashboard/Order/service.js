@@ -6,13 +6,13 @@ export function getOrderInfo(params){
         data: params
     })
 }
-export function opertionBlack(params){
-    return request(`/carSystem/opertionBlack`,{
+export function orderRefund(params){
+    return request(`/ResSystem/order/refund_order`,{
         method:'POST',
         data: params})
 }
-export function DeleteForumInfo(params){
-    return request(`/carSystem/deleteForumInfo`,{
+export function DeleteOrderInfo(params){
+    return request(`/ResSystem/order/delete_order`,{
         method:'POST',
         data: params})
 }

@@ -18,7 +18,7 @@ export default class GlobalForm extends Component {
             if(this.props.title === '编辑'){
                 const value = {...this.props.record}
                 this.setState({
-                    userid:value.userid
+                    sale_id:value.sale_id
                 })
                 if(this.formRef){
                     this.formRef.setFieldsValue({...value})

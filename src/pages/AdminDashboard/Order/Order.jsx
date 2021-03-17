@@ -1,68 +1,70 @@
 import React, { Component } from 'react'
-import {Card,Space,Button,Popconfirm,Message} from 'antd'
+import {Card,Space,Button,Popconfirm,Message,Modal,Form,Input} from 'antd'
 import ProTable from '@ant-design/pro-table';
-import {getOrderInfo} from './service'
+import {getOrderInfo,DeleteOrderInfo,orderRefund} from './service'
 import { PlusOutlined} from '@ant-design/icons'
 
 class Order extends Component {
 
-    forumcolumns = [
+  Ordercolumns = [
         {
           title: '订单号',
-          dataIndex: 'forumuserName',
-          key:'forumuserName',
+          dataIndex: 'order_id',
+          key:'order_id',
           search:false
         },
         {
           title: '顾客名称',
-          dataIndex: 'likeNum',
-          key:'likeNum',
+          dataIndex: 'username',
+          key:'username',
         },
         {
           title: '手机号',
-          dataIndex: 'disNum',
-          key:'disNum',
+          dataIndex: 'pnumber',
+          key:'pnumber',
           search:false
         },
         {
             title: '用餐桌号',
-            dataIndex: 'StarNum',
-            key:'StarNum',
+            dataIndex: 'table_num',
+            key:'table_num',
           },
         {
           title: '用餐人数',
-          dataIndex: 'commentNum',
-          key:'commentNum',
+          dataIndex: 'person_num',
+          key:'person_num',
           search: false
         },
+  
         {
-          title: '消费金额',
-          dataIndex: 'commentNum',
-          key:'commentNum',
+          title: '应付金额',
+          dataIndex: 'should_total_money',
+          key:'should_total_money',
           search: false
         },
         {
           title: '实付金额',
-          dataIndex: 'commentNum',
-          key:'commentNum',
+          dataIndex: 'real_total_money',
+          key:'real_total_money',
           search: false
         },
         {
           title: '收银员',
-          dataIndex: 'commentNum',
-          key:'commentNum',
+          dataIndex: 'collector',
+          key:'collector',
           search: false
         },
         {
           title: '支付方式',
-          dataIndex: 'commentNum',
-          key:'commentNum',
+          dataIndex: 'pay_type',
+          key:'pay_type',
           search: false
         },
         {
           title: '支付时间',
-          dataIndex: 'commentNum',
-          key:'commentNum',
+          dataIndex: 'paytime',
+          valueType:'dateTime',
+          key:'paytime',
           search: false,
           sorter: (a, b) => moment(a.commentNum )- moment(b.commentNum),
         },
@@ -73,10 +75,10 @@ class Order extends Component {
           valueType: 'option',
           render: (text,record) => (
              <>
-              <Button type='link'>退款</Button>
+              <Button type='link' disabled={record.flag_refund===1} onClick={()=>this.showModal(record.order_id)}>退款</Button>
               <Popconfirm
                   title="确定删除吗"
-                  onConfirm={()=>this.deleteForumInfo(record.forumId)}
+                  onConfirm={()=>this.DeleteOrderInfo(record)}
                   okText="确定"
                   cancelText="取消"
                 >
@@ -92,33 +94,55 @@ class Order extends Component {
     constructor(props){
         super(props);
         this.state={
-            selectedRowKeys:[]
+            visible:false,
+            order_id:undefined
         }
     }
 
-    ForumActionRef = React.createRef();
+    OrderActionRef = React.createRef();
 
     async componentDidMount(){
 
   }
-  deleteForumbatchInfo=async()=>{
-    const params = this.state.selectedRowKeys
-    const result = await DeleteForumInfo({forumId:params})
-    if(result.status === 200){
-      Message.success(result.message)
-      this.ForumActionRef.current.reloadAndRest()
+
+  closeModal=()=>{
+    this.setState({
+      visible:false
+    })
+  }
+
+  showModal=(id)=>{
+    this.setState({
+      visible:true,
+      order_id:id
+    })
+  }
+
+  submit=async values=>{ 
+    const result = await orderRefund(values)
+    if(result.code === 200){
+      this.setState({
+        visible:false
+      },()=>{
+        Message.success(result.message)
+        this.OrderActionRef.current.reloadAndRest()
+      })      
     }
     else{
       Message.error(result.message)
     }
   }
 
-  deleteForumInfo= async(forumId)=>{
-    const params = [forumId]
-    const result = await DeleteForumInfo({forumId:params})
-    if(result.status === 200){
+
+
+  DeleteOrderInfo= async(record)=>{
+    const params = {}
+    params.pnumber=record.pnumber
+    params.order_id=record.order_id
+    const result = await DeleteOrderInfo(params)
+    if(result.code === 200){
       Message.success(result.message)
-      this.ForumActionRef.current.reloadAndRest()
+      this.OrderActionRef.current.reloadAndRest()
     }
     else{
       Message.error(result.message)
@@ -133,11 +157,18 @@ class Order extends Component {
         return (
             <Card>
                 <ProTable  
-                     rowKey="forumId"
-                     actionRef={this.ForumActionRef}
-                     columns={this.forumcolumns}
+                     rowKey="order_id"
+                     actionRef={this.OrderActionRef}
+                     columns={this.Ordercolumns}
                      request={async params =>{
-                       const result = await getOrderInfo()
+                      const newparams={}
+                      if(params.username){
+                       newparams.username=params.username
+                      }
+                      if(params.table_num){
+                       newparams.table_num=params.table_num
+                      }
+                       const result = await getOrderInfo(newparams)
                        if(result.length){
                         return{
                           data:result,
@@ -158,6 +189,43 @@ class Order extends Component {
                            pageSize: 10,
                          }}
                        />
+                       <Modal  
+            visible={this.state.visible}
+            title='退款流程'
+            okText="确定"
+            cancelText="关闭" 
+            onCancel={()=>{
+                this.formRef.resetFields()
+                this.closeModal()
+                }}
+            onOk={()=>{
+                this.formRef
+                    .validateFields()
+                    .then((values) => {
+                        const editObj = {...values,order_id:this.state.order_id}
+                        this.formRef.resetFields();
+                        this.submit(editObj);
+          })
+            }}
+            destroyOnClose>
+            <Form
+               ref={ref => {
+                this.formRef = ref;
+              }}
+                layout="vertical"
+                name="form_in_modal"
+               
+                >
+                <Form.Item
+                    label="退款理由"
+                    name="refund_reason"
+                    rules={[{required:true,message:'请输入退款理由'}]}
+                   >
+                       <Input ></Input>
+                </Form.Item>
+
+                </Form>
+            </Modal>
             </Card>
         )
     }
