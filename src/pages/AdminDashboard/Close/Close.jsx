@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
-import {Card,Space,Button,InputNumber,Message,Modal,Form,Input} from 'antd'
+import {Card,Button,Message} from 'antd'
 import ProTable from '@ant-design/pro-table';
 import {getOrderInfo,close} from './service'
-import { PlusOutlined} from '@ant-design/icons'
 import GlobalForm from './GlobalForm'
 
 class Close extends Component {

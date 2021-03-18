@@ -15,13 +15,14 @@ class User extends Component {
         {
           title: '性别',
           dataIndex: 'gender',
-          key:'gender'
+          key:'gender',
+          search:false
     },
         {
             title: '联系方式',
             dataIndex: 'pnumber',
             key:'pnumber',
-            search:false
+            
           },
           {
             title: '生日',
@@ -147,8 +148,8 @@ class User extends Component {
                        if(params.username){
                         newparams.username=params.username
                        }
-                       if(params.gender){
-                        newparams.gender=params.gender
+                       if(params.pnumber){
+                        newparams.pnumber=params.pnumber
                        }
                        const result = await getUserInfo(newparams)
                        if(result.length){
