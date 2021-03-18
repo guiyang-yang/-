@@ -8,7 +8,7 @@ export default [
           { path: '/admin/dashboard/order', component: './AdminDashboard/Order/',name:"订单管理" ,isShow: true},
           { path: '/admin/dashboard/notice', component: './AdminDashboard/Notice/',name:"销售公告管理" ,isShow: true},
           { path: '/admin/dashboard/data', component: './AdminDashboard/Data/',name:"销售数据运用" ,isShow: true},
-          { path: '/admin/dashboard/close', component: './AdminDashboard/Notice/',name:"结算" ,isShow: true},
+          { path: '/admin/dashboard/close', component: './AdminDashboard/Close/',name:"结算" ,isShow: true},
 
         ]
       },
