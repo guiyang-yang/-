@@ -29,8 +29,8 @@ class Data extends Component {
                     return (
                     <TabPane tab={v.data_title} key={v.data_id} >
                         <div style={{display:'flex'}} >
-                        <img src={v.data_pic} alt="无法加载图片" />
-                        <Input.TextArea style={{height:'200px'}} row={25} col={10} value={v.data_content}></Input.TextArea>
+                        <img src={v.data_pic} alt="无法加载图片"  style={{width:'700px',height:'700px'}}/>
+                        <Input.TextArea style={{height:'700px',width:'400px',textAlign:'center'}} row={25} col={10} value={v.data_content}></Input.TextArea>
                         </div>
                                
                     </TabPane>
