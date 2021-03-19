@@ -1,16 +1,17 @@
 import React, { Component } from 'react'
-import {Modal,Form,Input,Cascader,DatePicker, Space ,InputNumber,Select,Radio } from 'antd'
+import {Modal,Form,Input,Cascader,DatePicker, Space ,InputNumber,Select,Upload } from 'antd'
 import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment'
 import ImageUpload from './ImageUpload'
-
+import { PlusOutlined,LoadingOutlined} from '@ant-design/icons'
 const {Option} = Select
 export default class GlobalForm extends Component {
     constructor(props){
         super(props)
         this.formRef = undefined
         this.state={
-            
+            loading:false,
+            imageUrl:undefined
         }
     }
 
@@ -46,6 +47,14 @@ export default class GlobalForm extends Component {
         }
     }
 
+    
+  getImageName=imgUrl=>{
+    this.setState({
+      imgUrl
+    })
+  }
+
+
 
     render() {
         const {visible,title,onClose,onCreate} = this.props
@@ -65,7 +74,7 @@ export default class GlobalForm extends Component {
                     .validateFields()
                     .then((values) => {
                        
-                        const newObj = {...values}
+                        const newObj = {...values,food_pic:this.state.imgUrl}
                         const editObj = {...values,food_code:this.state.food_code}
                         this.formRef.resetFields();
                         onCreate(title==='编辑'?editObj:newObj,title);
@@ -105,7 +114,7 @@ export default class GlobalForm extends Component {
             label="菜品图片"
             name="food_pic"
           >
-            <ImageUpload />
+            <ImageUpload   avatar={this.props.record&&this.props.record.food_pic} getImageName={this.getImageName}/>
             </Form.Item>
                 <Form.Item
                     label="菜品价格"

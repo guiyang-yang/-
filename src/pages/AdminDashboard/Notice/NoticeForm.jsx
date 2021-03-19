@@ -26,7 +26,11 @@ export default class NoticeForm extends Component {
             }
         }  
     }
-
+    getImageName=imgUrl=>{
+        this.setState({
+          imgUrl
+        })
+      }
     
     render() {
         const {visible,onClose,onCreate,title} = this.props
@@ -44,7 +48,7 @@ export default class NoticeForm extends Component {
                 this.formRef
                     .validateFields()
                     .then((values) => {
-                        const newObj = {...values}
+                        const newObj = {...values,sale_pic:this.state.imgUrl}
                         const editObj = {...values,sale_id:this.state.sale_id}
                         this.formRef.resetFields();
                         onCreate(title==='编辑'?editObj:newObj,title);
@@ -77,9 +81,9 @@ export default class NoticeForm extends Component {
                 </Form.Item>
                 <Form.Item
             label="菜品图片"
-            name="food_pic"
+            name="sale_pic"
           >
-            <ImageUpload />
+               <ImageUpload   avatar={this.props.record&&this.props.record.sale_pic} getImageName={this.getImageName}/>
             </Form.Item>
                 </Form>
             </Modal>
