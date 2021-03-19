@@ -16,7 +16,7 @@ export default class TableForm extends Component {
             if(this.props.title === '编辑'){
                 const value = {...this.props.record}
                 this.setState({
-                    sale_id:value.sale_id
+                    table_id:value.table_id
                 })
                 if(this.formRef){
                     this.formRef.setFieldsValue({...value})
@@ -42,8 +42,8 @@ export default class TableForm extends Component {
                 this.formRef
                     .validateFields()
                     .then((values) => {
-                        const newObj = {...values,sale_pic:this.state.imgUrl}
-                        const editObj = {...values,sale_id:this.state.sale_id,sale_pic:this.state.imgUrl}
+                        const newObj = {...values}
+                        const editObj = {...values,table_id:this.state.table_id}
                         this.formRef.resetFields();
                         onCreate(title==='编辑'?editObj:newObj,title);
           })
@@ -61,17 +61,17 @@ export default class TableForm extends Component {
                
                 <Form.Item
                     label="餐桌名"
-                    name="sale_title"
+                    name="table_num"
                     rules={[{required:true,message:'请输入餐桌名'}]}
                    >
                      <Input  placeholder="请输入餐桌名" />            
                 </Form.Item>
                 <Form.Item
                     label="餐桌人数"
-                    name="sale_content"
+                    name="table_limit"
                     rules={[{required:true,message:'请输入餐桌容纳人数'}]}
                 >
-                    <InputNumber   />
+                    <Input   placeholder="请输入餐桌容纳人数"/>
                 </Form.Item>
             
                 </Form>

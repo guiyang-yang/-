@@ -1,25 +1,25 @@
 import request from 'umi-request'
 
-export function getNoticeInfo(params){
-    return request(`/ResSystem/saleAnnouncement/list_select_saleNotice`,{
+export function getTableInfo(params){
+    return request(`/ResSystem/table/list_select_table`,{
         method:'POST',
         data: params
     })
 }
 
-export function DeleteNoticeInfo(params){
-    return request(`/ResSystem/saleAnnouncement/delete_saleNotice`,{
+export function DeleteTableInfo(params){
+    return request(`/ResSystem/table/delete_table`,{
         method:'POST',
         data: params})
 }
 
-export function newNoticeInfo(params){
-    return request(`/ResSystem/saleAnnouncement/insert_saleNotice`,{
+export function newTableInfo(params){
+    return request(`/ResSystem/table/insert_table`,{
         method:'POST',
         data: params})
 }
-export function editNoticeInfo(params){
-    return request(`/ResSystem/saleAnnouncement/update_saleNotice`,{
+export function editTableInfo(params){
+    return request(`/ResSystem/table/update_table`,{
         method:'POST',
         data: params})
 }

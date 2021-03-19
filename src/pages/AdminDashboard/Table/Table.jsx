@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {Card,Space,Button,Popconfirm,Message} from 'antd'
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment'
-import {DeleteNoticeInfo,getNoticeInfo,newNoticeInfo,editNoticeInfo} from './service'
+import {DeleteTableInfo,getTableInfo,newTableInfo,editTableInfo} from './service'
 import { PlusOutlined} from '@ant-design/icons'
 import TableForm from './TableForm'
 
@@ -11,19 +11,19 @@ class Notice extends Component {
     Tablecolumns = [
       {
         title: '餐桌号',
-        dataIndex: 'sale_id',
-        key:'sale_id',
+        dataIndex: 'table_id',
+        key:'table_id',
         search: false,
       },
         {
           title: '餐桌名',
-          dataIndex: 'sale_title',
-          key:'sale_title',
+          dataIndex: 'table_num',
+          key:'table_num',
         },
           {
           title: '餐桌人数',
-          dataIndex: 'sale_content',
-          key:'sale_content',
+          dataIndex: 'table_limit',
+          key:'table_limit',
         },
         {
           title: '操作',
@@ -35,7 +35,7 @@ class Notice extends Component {
              <Button type='link' onClick={()=>this.showEditModal(record)}>编辑</Button>
               <Popconfirm
                   title="确定删除吗"
-                  onConfirm={()=>this.deleteNoticeInfo(record.sale_id)}
+                  onConfirm={()=>this.deleteTableInfo(record.table_id)}
                   okText="确定"
                   cancelText="取消"
                 >
@@ -64,8 +64,8 @@ class Notice extends Component {
 
 
 
-  deleteNoticeInfo= async noticeId=>{
-    const result = await DeleteNoticeInfo({sale_id:noticeId})
+  deleteTableInfo= async noticeId=>{
+    const result = await DeleteTableInfo({table_id:noticeId})
     if(result.code === 200){
       Message.success(result.message)
       this.TableActionRef.current.reloadAndRest()
@@ -101,7 +101,7 @@ class Notice extends Component {
   submit=async(values,title)=>{ 
     if(title==='新建')    
     {
-      const result = await newNoticeInfo(values)
+      const result = await newTableInfo(values)
     if(result.code === 200){
       this.setState({
         visible:false
@@ -115,7 +115,7 @@ class Notice extends Component {
     }
   }
     else{
-      const result = await editNoticeInfo(values)
+      const result = await editTableInfo(values)
       if(result.code === 200){
         this.setState({
           visible:false
@@ -152,10 +152,13 @@ class Notice extends Component {
   
                      request={async params =>{
                       const newParams={}
-                      if(params.sale_title){
-                        newParams.sale_title=params.sale_title
+                      if(params.table_limit){
+                        newParams.table_limit=params.table_limit
                     }
-                    const result = await getNoticeInfo(newParams)
+                    if(params.table_num){
+                        newParams.table_num=params.table_num
+                    }
+                    const result = await getTableInfo(newParams)
                        if(result.length){
                         return{
                           data:result,
