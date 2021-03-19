@@ -75,7 +75,7 @@ export default class GlobalForm extends Component {
                     .then((values) => {
                        
                         const newObj = {...values,food_pic:this.state.imgUrl}
-                        const editObj = {...values,food_code:this.state.food_code}
+                        const editObj = {...values,food_code:this.state.food_code,food_pic:this.state.imgUrl}
                         this.formRef.resetFields();
                         onCreate(title==='编辑'?editObj:newObj,title);
           })

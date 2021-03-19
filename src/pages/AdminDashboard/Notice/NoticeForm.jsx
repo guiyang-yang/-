@@ -18,7 +18,7 @@ export default class NoticeForm extends Component {
             if(this.props.title === '编辑'){
                 const value = {...this.props.record}
                 this.setState({
-                    userid:value.userid
+                    sale_id:value.sale_id
                 })
                 if(this.formRef){
                     this.formRef.setFieldsValue({...value})
@@ -49,7 +49,7 @@ export default class NoticeForm extends Component {
                     .validateFields()
                     .then((values) => {
                         const newObj = {...values,sale_pic:this.state.imgUrl}
-                        const editObj = {...values,sale_id:this.state.sale_id}
+                        const editObj = {...values,sale_id:this.state.sale_id,sale_pic:this.state.imgUrl}
                         this.formRef.resetFields();
                         onCreate(title==='编辑'?editObj:newObj,title);
           })

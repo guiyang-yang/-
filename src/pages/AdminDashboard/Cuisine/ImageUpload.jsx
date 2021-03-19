@@ -23,6 +23,7 @@ const ImageUpload = ({getImageName,avatar}) => {
     data.append('file',file)
     data.append('key','file')
 
+
     
     request(`/ResSystem/food/upload_food_pic`, {
       method:'POST',
