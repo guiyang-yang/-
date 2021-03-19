@@ -11,11 +11,12 @@ import {
   CreditCardOutlined,
   UserOutlined,
   SendOutlined,
-  RedEnvelopeOutlined
+  RedEnvelopeOutlined,
+  TableOutlined 
 } from '@ant-design/icons';
 
 const { Header, Footer, Sider, Content } = Layout;
-const icon =[< UserOutlined/>,<SendOutlined />,<FormOutlined />,<CreditCardOutlined />,< PieChartOutlined/>,<RedEnvelopeOutlined />]
+const icon =[< UserOutlined/>,<SendOutlined />,<TableOutlined />,<FormOutlined />,<CreditCardOutlined />,< PieChartOutlined/>,<RedEnvelopeOutlined />]
 
 export default class BasicLayout extends Component {
   state = {

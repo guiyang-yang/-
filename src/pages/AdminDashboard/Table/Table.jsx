@@ -4,34 +4,26 @@ import ProTable from '@ant-design/pro-table';
 import moment from 'moment'
 import {DeleteNoticeInfo,getNoticeInfo,newNoticeInfo,editNoticeInfo} from './service'
 import { PlusOutlined} from '@ant-design/icons'
-import NoticeForm from './NoticeForm'
+import TableForm from './TableForm'
 
 class Notice extends Component {
 
-    Noticecolumns = [
+    Tablecolumns = [
       {
-        title: '销售号',
+        title: '餐桌号',
         dataIndex: 'sale_id',
         key:'sale_id',
         search: false,
       },
         {
-          title: '销售标题',
+          title: '餐桌名',
           dataIndex: 'sale_title',
           key:'sale_title',
         },
           {
-          title: '销售内容',
+          title: '餐桌人数',
           dataIndex: 'sale_content',
           key:'sale_content',
-          search: false,
-        },
-        {
-          title: '销售图片',
-          dataIndex: 'sale_pic',
-          key: 'sale_pic',
-          valueType: 'image',
-          search: false,
         },
         {
           title: '操作',
@@ -64,7 +56,7 @@ class Notice extends Component {
         }
     }
 
-    NoticeActionRef = React.createRef();
+    TableActionRef = React.createRef();
 
     async componentDidMount(){
 
@@ -76,7 +68,7 @@ class Notice extends Component {
     const result = await DeleteNoticeInfo({sale_id:noticeId})
     if(result.code === 200){
       Message.success(result.message)
-      this.NoticeActionRef.current.reloadAndRest()
+      this.TableActionRef.current.reloadAndRest()
     }
     else{
       Message.error(result.message)
@@ -115,7 +107,7 @@ class Notice extends Component {
         visible:false
       },()=>{
         Message.success(result.message)
-        this.NoticeActionRef.current.reloadAndRest()
+        this.TableActionRef.current.reloadAndRest()
       })      
     }
     else{
@@ -129,7 +121,7 @@ class Notice extends Component {
           visible:false
         },()=>{
           Message.success(result.message)
-          this.NoticeActionRef.current.reloadAndRest()
+          this.TableActionRef.current.reloadAndRest()
         })      
       }
       else{
@@ -152,11 +144,11 @@ class Notice extends Component {
                       style={{marginRight:'10px'}}
                       onClick={this.showModal}
                     >
-                     添加销售公告
+                     添加餐桌
                     </Button></Space>}
                      rowKey="sale_id"
-                     actionRef={this.NoticeActionRef}
-                     columns={this.Noticecolumns}
+                     actionRef={this.TableActionRef}
+                     columns={this.Tablecolumns}
   
                      request={async params =>{
                       const newParams={}
@@ -184,7 +176,7 @@ class Notice extends Component {
                            pageSize: 10,
                          }}
                        />
-                       {visible?<NoticeForm  onClose={this.closeModal} onCreate={this.submit} {...this.state}  />:null}
+                       {visible?<TableForm  onClose={this.closeModal} onCreate={this.submit} {...this.state}  />:null}
             </Card>
         )
     }
