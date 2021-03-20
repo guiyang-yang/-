@@ -128,7 +128,7 @@ class User extends Component {
 
     exportXls = async ()=>{
       const data = await DownLoadUser({})
-      this.getOutExcel('用户信息.xlsx',data)
+      this.getOutExcel('用户信息.csv',data)
     }
   
     getOutExcel= (fileName, res)=> {

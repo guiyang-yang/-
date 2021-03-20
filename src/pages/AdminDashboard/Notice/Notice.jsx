@@ -140,7 +140,7 @@ class Notice extends Component {
 
   exportXls = async ()=>{
     const data = await DownLoadNotice({})
-    this.getOutExcel('销售公告信息.xlsx',data)
+    this.getOutExcel('销售公告信息.csv',data)
   }
 
   getOutExcel= (fileName, res)=> {

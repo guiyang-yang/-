@@ -151,7 +151,7 @@ class Order extends Component {
  
   exportXls = async ()=>{
     const data = await DownLoadOrder({})
-    this.getOutExcel('订单信息.xlsx',data)
+    this.getOutExcel('订单信息.csv',data)
   }
 
   getOutExcel= (fileName, res)=> {

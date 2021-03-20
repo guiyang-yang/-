@@ -143,7 +143,7 @@ class Cuisine extends Component {
 
   exportXls = async ()=>{
     const data = await DownLoadCuisine({})
-    this.getOutExcel('菜品信息.xlsx',data)
+    this.getOutExcel('菜品信息.csv',data)
   }
 
   getOutExcel= (fileName, res)=> {
