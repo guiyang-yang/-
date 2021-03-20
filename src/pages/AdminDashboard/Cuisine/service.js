@@ -22,3 +22,10 @@ export function DeleteCuisine(params){
         method:'POST',
         data: params})
 }
+
+export function DownLoadCuisine(params){
+    return request(`/ResSystem/food/download_food`,{
+        method:'POST',
+        data: params,
+        })
+}

@@ -16,3 +16,9 @@ export function DeleteOrderInfo(params){
         method:'POST',
         data: params})
 }
+export function DownLoadOrder(params){
+    return request(`/ResSystem/order/download_order`,{
+        method:'POST',
+        data: params,
+        })
+}

@@ -20,3 +20,9 @@ export function RemoveUser(params){
         method:'POST',
         data: params})
 }
+export function DownLoadUser(params){
+    return request(`/ResSystem/user/download_user`,{
+        method:'POST',
+        data: params,
+        ContentType:'blob'})
+}

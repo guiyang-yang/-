@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import {Card,Space,Button,Popconfirm,Message,Modal,Form,Input} from 'antd'
 import ProTable from '@ant-design/pro-table';
-import {getOrderInfo,DeleteOrderInfo,orderRefund} from './service'
-import { PlusOutlined} from '@ant-design/icons'
+import {getOrderInfo,DeleteOrderInfo,orderRefund,DownLoadOrder} from './service'
+import { PlusOutlined,DownloadOutlined} from '@ant-design/icons'
 
 class Order extends Component {
 
@@ -149,6 +149,30 @@ class Order extends Component {
     }
   }
  
+  exportXls = async ()=>{
+    const data = await DownLoadOrder({})
+    this.getOutExcel('订单信息.xlsx',data)
+  }
+
+  getOutExcel= (fileName, res)=> {
+      const blob = new Blob([res], { type: 'application/vnd.ms-excel,charset=utf-8' });
+      if (window.navigator.msSaveOrOpenBlob) {
+          // 兼容 IE & EDGE
+          navigator.msSaveBlob(blob, fileName);
+      } else {
+          const link = document.createElement('a');
+          // 兼容不同浏览器的URL对象
+          const url = window.URL || window.webkitURL || window.moxURL
+          // 创建下载链接
+          link.href = url.createObjectURL(blob);
+          // 命名下载名称
+          link.download = fileName;
+          // 点击触发下载
+          link.click();
+          // 下载完成进行释放
+          url.revokeObjectURL(link.href);
+      }
+  }
  
 
 
@@ -157,6 +181,13 @@ class Order extends Component {
         return (
             <Card>
                 <ProTable  
+                headerTitle={
+                  <Space>
+                  <Button
+            type='primary' onClick={this.exportXls} icon={<DownloadOutlined />}
+          >
+            下载订单信息
+          </Button></Space>}
                      rowKey="order_id"
                      actionRef={this.OrderActionRef}
                      columns={this.Ordercolumns}

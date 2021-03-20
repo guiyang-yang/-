@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import {Card,Space,Button,Tooltip,Message} from 'antd'
 import ProTable from '@ant-design/pro-table';
-import { PlusOutlined} from '@ant-design/icons'
-import {getUserInfo,EditUser,AddUser,RemoveUser} from './service'
+import { PlusOutlined,DownloadOutlined} from '@ant-design/icons'
+import {getUserInfo,EditUser,AddUser,RemoveUser,DownLoadUser} from './service'
 import GlobalForm from './GlobalForm'
 
 class User extends Component {
@@ -126,6 +126,32 @@ class User extends Component {
       }
     }
 
+    exportXls = async ()=>{
+      const data = await DownLoadUser({})
+      this.getOutExcel('用户信息.xlsx',data)
+    }
+  
+    getOutExcel= (fileName, res)=> {
+        const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        if (window.navigator.msSaveOrOpenBlob) {
+            // 兼容 IE & EDGE
+            navigator.msSaveBlob(blob, fileName);
+        } else {
+            const link = document.createElement('a');
+            // 兼容不同浏览器的URL对象
+            const url = window.URL || window.webkitURL || window.moxURL
+            // 创建下载链接
+            link.href = url.createObjectURL(blob);
+            // 命名下载名称
+            link.download = fileName;
+            // 点击触发下载
+            link.click();
+            // 下载完成进行释放
+            url.revokeObjectURL(link.href);
+        }
+    }
+  
+
     render() { 
         const {visible} = this.state
         return (
@@ -139,7 +165,12 @@ class User extends Component {
                     onClick={this.showModal} 
                   >
                   添加用户
-                  </Button></Space>}
+                  </Button>
+                  <Button
+              type='primary' onClick={this.exportXls} icon={<DownloadOutlined />}
+            >
+              下载用户信息
+            </Button></Space>}
                      rowKey="userid"
                      actionRef={this.UserActionRef}
                      columns={this.Usercolumns}

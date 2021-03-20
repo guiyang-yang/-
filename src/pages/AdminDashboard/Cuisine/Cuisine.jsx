@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import {Card,Space,Button,Popconfirm,Message} from 'antd'
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment'
-import { PlusOutlined} from '@ant-design/icons'
-import {AddCuisine,getCuisine,EditCuisine,DeleteCuisine} from './service'
+import { PlusOutlined,DownloadOutlined} from '@ant-design/icons'
+import {AddCuisine,getCuisine,EditCuisine,DeleteCuisine,DownLoadCuisine} from './service'
 import GlobalForm from './GlobalForm'
 
 class Cuisine extends Component {
@@ -140,6 +140,31 @@ class Cuisine extends Component {
       }
     }
   }
+
+  exportXls = async ()=>{
+    const data = await DownLoadCuisine({})
+    this.getOutExcel('菜品信息.xlsx',data)
+  }
+
+  getOutExcel= (fileName, res)=> {
+      const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      if (window.navigator.msSaveOrOpenBlob) {
+          // 兼容 IE & EDGE
+          navigator.msSaveBlob(blob, fileName);
+      } else {
+          const link = document.createElement('a');
+          // 兼容不同浏览器的URL对象
+          const url = window.URL || window.webkitURL || window.moxURL
+          // 创建下载链接
+          link.href = url.createObjectURL(blob);
+          // 命名下载名称
+          link.download = fileName;
+          // 点击触发下载
+          link.click();
+          // 下载完成进行释放
+          url.revokeObjectURL(link.href);
+      }
+  }
  
 
 
@@ -157,7 +182,12 @@ class Cuisine extends Component {
                     onClick={this.showModal} 
                   >
                   添加菜品
-                  </Button></Space>}                     
+                  </Button>
+                  <Button
+              type='primary' onClick={this.exportXls} icon={<DownloadOutlined />}
+            >
+              下载菜品信息
+            </Button></Space>}                     
                      rowKey="food_code"
                      actionRef={this.FoodActionRef}
                      columns={this.Foodcolumns}

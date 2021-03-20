@@ -23,3 +23,9 @@ export function editTableInfo(params){
         method:'POST',
         data: params})
 }
+export function DownLoadTable(params){
+    return request(`/ResSystem/table/download_table`,{
+        method:'POST',
+        data: params,
+        })
+}

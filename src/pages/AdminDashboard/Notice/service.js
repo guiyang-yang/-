@@ -23,3 +23,10 @@ export function editNoticeInfo(params){
         method:'POST',
         data: params})
 }
+
+export function DownLoadNotice(params){
+    return request(`/ResSystem/saleAnnouncement/download_notice`,{
+        method:'POST',
+        data: params,
+        })
+}
